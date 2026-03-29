@@ -1,0 +1,35 @@
+{
+  "name": "x-laptop",
+  "version": "1.0.0",
+  "description": "x-laptop with MERN stack by Xushnudbek(HAMILTON)",
+  "main": "src/server.ts",
+  "scripts": {
+    "start": "ts-node src/server.ts",
+    "dev": "nodemon --exec tsx src/server.ts",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Xushnudbek76/X-laptop.git"
+  },
+  "author": "Xushnubdek (HAMILTON)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Xushnudbek76/X-laptop/issues"
+  },
+  "homepage": "https://github.com/Xushnudbek76/X-laptop#readme",
+  "devDependencies": {
+    "@types/express": "^5.0.6",    
+    "nodemon": "^3.1.14",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2"
+  },
+  "dependencies": {
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "mongodb": "^7.1.1",
+    "mongoose": "^9.3.3"
+  }
+}
