@@ -15,13 +15,18 @@ export enum Message {
   UPDATE_FAILED = "Update failed",
 
   USED_NICK_PHONE = "Nick or phone number is already in use!",
-NO_MEMBER_NICK = "Member with that nick does not exist!",
-WRONG_PASSWORD = "Password is incorrect, please try again!",
+ NO_MEMBER_NICK = "Member with that nick does not exist!",
+ WRONG_PASSWORD = "Password is incorrect, please try again!",
 }
 
 class Errors extends Error {
   public code: HttpCode;
   public message: Message;
+  
+  static standard = {
+    code: HttpCode.INTERNAL_SERVER_ERROR,
+    message: Message.SOMETHING_WENT_WRONG,
+  };
 
   constructor(statusCode: HttpCode, statusMessage: Message) {
     super();
