@@ -1,14 +1,39 @@
-import express from 'express';
+import express, { Router } from "express";
 const routerAdmin = express.Router();
-import  restaurantController  from './controllers/restaurant.controller';
+import shopController from "./controllers/shop.controller";
+import makeUploader from "./libs/utils/uploader";
+import productController from "./controllers/product.controller";
 
 /** Restaurant */
-routerAdmin.get('/', restaurantController.goHome);
+routerAdmin.get("/", shopController.goHome);
 routerAdmin
-    .get('/login', restaurantController.getLogin)
-    .post("/login/process", restaurantController.processLogin);
+  .get("/login", shopController.getLogin)
+  .post("/login/process", shopController.processLogin);
 routerAdmin
-    .get('/signup', restaurantController.getSignup)
-    .post("/signup/process", restaurantController.processSignup);
+  .get("/signup", shopController.getSignup)
+  .post(
+    "/signup/process",
+    makeUploader("members").single("memberImage"),
+    shopController.processSignup,
+  );
+routerAdmin.get("/logout", shopController.logout);
+
+/** Product */
+routerAdmin.get(
+  "product/all",
+  shopController.verifyShop,
+  productController.getAllProducts,
+);
+routerAdmin.post(
+  "product/create",
+  shopController.verifyShop,
+  makeUploader('products').array('productImages', 5),
+  productController.createNewProduct,
+);
+routerAdmin.post(
+  "/product/:id",
+  shopController.verifyRestaurant,
+  productController.updateChosenProduct,
+);
 
 export default routerAdmin;
