@@ -8,11 +8,11 @@ import productController from "./controllers/product.controller";
 routerAdmin.get("/", shopController.goHome);
 routerAdmin
   .get("/login", shopController.getLogin)
-  .post("/login/process", shopController.processLogin);
+  .post("/login", shopController.processLogin);
 routerAdmin
   .get("/signup", shopController.getSignup)
   .post(
-    "/signup/process",
+    "/signup",
     makeUploader("members").single("memberImage"),
     shopController.processSignup,
   );
@@ -22,18 +22,18 @@ routerAdmin.get("/logout", shopController.logout);
 routerAdmin.get(
   "product/all",
   shopController.verifyShop,
-  productController.getAllProducts,
+  productController.getAllItems,
 );
 routerAdmin.post(
   "product/create",
   shopController.verifyShop,
   makeUploader('products').array('productImages', 5),
-  productController.createNewProduct,
+  productController.createNewItem,
 );
 routerAdmin.post(
   "/product/:id",
   shopController.verifyRestaurant,
-  productController.updateChosenProduct,
+  productController.updateChosenItem,
 );
 
 export default routerAdmin;

@@ -6,7 +6,7 @@ import {
   LaptopRam,
   LaptopStorage,
   LaptopCondition,
-} from "../libs/enums/product.enum";
+} from "../libs/enums/item.enum";
 
 const laptopSchema = new Schema(
   {
@@ -70,7 +70,17 @@ const laptopSchema = new Schema(
       type: [String],
       default: [],
     },
-
+    laptopCpu: {
+      type: String,
+      required: true,
+    },
+    laptopGpu: {
+      type: String,
+    },
+    laptopDisplaySize: {
+      type: Number,
+      required: true,
+    },
     laptopViews: {
       type: Number,
       default: 0,
