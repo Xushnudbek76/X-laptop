@@ -27,7 +27,7 @@ routerAdmin.get(
 routerAdmin.post(
   "product/create",
   shopController.verifyShop,
-  makeUploader('products').array('productImages', 5),
+  makeUploader("products").array("productImages", 5),
   productController.createNewItem,
 );
 routerAdmin.post(
@@ -36,4 +36,16 @@ routerAdmin.post(
   productController.updateChosenItem,
 );
 
+/** User*/
+
+routerAdmin.get(
+  "/user/all",
+  shopController.verifyShop,
+  shopController.getUsers,
+);
+routerAdmin.post(
+  "/user/update",
+  shopController.verifyShop,
+  shopController.updateChosenUser,
+);
 export default routerAdmin;

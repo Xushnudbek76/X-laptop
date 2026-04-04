@@ -36,34 +36,30 @@ shopController.getSignup = (req: Request, res: Response) => {
   }
 };
 
-
-
 shopController.processSignup = async (req: AdminRequest, res: Response) => {
   try {
     console.log("processSignup");
     const file = req.file;
 
-    if(!file) throw new Errors(HttpCode.BAD_REQUEST, Message.SOMETHING_WENT_WRONG);
+    if (!file)
+      throw new Errors(HttpCode.BAD_REQUEST, Message.SOMETHING_WENT_WRONG);
 
     const newMember: MemberInput = req.body;
     newMember.memberImage = file?.path.replace(/\\/g, "/");
     newMember.memberType = MemberType.SHOP;
 
-    const memberService = new MemberService();
     const result = await memberService.processSignup(newMember);
 
     req.session.member = result;
     req.session.save(function () {
-      res.redirect('/admin/product/all');
+      res.redirect("/admin/product/all");
     });
-
-    
   } catch (error) {
     console.log("Error, getSignup:", error);
     const message =
       error instanceof Errors ? error.message : Message.SOMETHING_WENT_WRONG;
     res.send(`
-      <script>alert('Hi, ${message}') window.location.replace('admin/signup')</script>
+      <script>alert('Hi, ${message}'); window.location.replace('/admin/signup')</script>
       `);
   }
 };
@@ -98,6 +94,30 @@ shopController.logout = async (req: AdminRequest, res: Response) => {
     console.log("Error, logout:", error);
     res.send(error);
     res.redirect("/admin");
+  }
+};
+
+shopController.getUsers = async (req: Request, res: Response) => {
+  try {
+    console.log("getUsers");
+    const result = await memberService.getUsers();
+
+    res.render("users", { users: result });
+  } catch (error) {
+    console.log("Error, getUsers:", error);
+    res.redirect("admin/login");
+  }
+};
+
+shopController.updateChosenUser = async (req: Request, res: Response) => {
+  try {
+    console.log("updateChosenUser");
+    const result = await memberService.updateChosenUser(req.body);
+    res.status(HttpCode.OK).json({ data: result });
+  } catch (error) {
+    console.log("Error, updateChosenUser:", error);
+    if (error instanceof Errors) res.status(error.code).json(error);
+    else res.status(Errors.standard.code).json(Errors.standard);
   }
 };
 
