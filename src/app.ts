@@ -8,15 +8,23 @@ import session from "express-session";
 import ConnectMongoDB from "connect-mongodb-session";
 import { T } from "./libs/types/common";
 
+import dotenv from "dotenv";
+dotenv.config();
+
+
+
 const MongoDBStore = ConnectMongoDB(session);
 const store = new MongoDBStore({
   uri: String(process.env.MONGO_URI),
   collection: "sessions",
 });
+
+
 /** 1-ENTRANCE **/
 const app = express();
-app.use(express.static(path.join(__dirname, "public")));
+
 app.use(express.json());
+app.use(express.urlencoded({extended: true}))
 app.use(morgan(MORGAN_FORMAT));
 
 /** 2-SESSIONS **/
@@ -31,11 +39,14 @@ app.use(
     saveUninitialized: false,
   }),
 );
+
 app.use(function (req, res, next) {
     const sessionsInstance = req.session as T;
     res.locals.member = sessionsInstance.member;
     next();
 })
+
+app.use(express.static(path.join(__dirname, "public")));
 /** 3-VIEWS **/
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");

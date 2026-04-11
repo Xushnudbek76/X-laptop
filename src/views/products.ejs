@@ -1,0 +1,288 @@
+<%- include('includes/header') %>
+
+<style>
+  .page-body { min-height: 100vh; background: var(--bg); }
+
+  .table-wrap { overflow-x: auto; }
+
+  .laptop-name-cell {
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .laptop-brand {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-glow);
+    border-radius: 4px;
+    padding: 0.1rem 0.4rem;
+  }
+
+  .price-cell {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .stock-cell { font-family: var(--font-mono); font-size: 0.82rem; }
+  .stock-low  { color: var(--danger); }
+  .stock-ok   { color: var(--success); }
+
+  /* New laptop form */
+  .form-section { display: none; }
+  .form-section.open { display: block; }
+
+  .form-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .form-grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  .laptops-count {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.2rem 0.65rem;
+  }
+
+  @media (max-width: 640px) {
+    .form-grid-2 { grid-template-columns: 1fr; }
+    .form-grid-3 { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (max-width: 420px) {
+    .form-grid-3 { grid-template-columns: 1fr; }
+  }
+</style>
+
+<body class="page-body">
+  <nav class="navbar">
+    <div class="navbar-brand"><span style="color:var(--accent)">X</span>LAPTOP</div>
+    <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="navbar-links" id="navbar-links">
+      <li><a href="/admin">Home</a></li>
+      <li><a href="/admin/item/all" class="active">Laptops</a></li>
+      <li><a href="/admin/user/all">Users</a></li>
+      <li class="logout-link" onclick="return confirm('Logout?')"><a href="/admin/logout">Logout</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrapper" style="display:flex; flex-direction:column; gap:1.5rem;">
+
+    <!-- Laptop Table -->
+    <div class="panel">
+      <div class="panel-header">
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+          <span class="panel-title">Laptop Inventory</span>
+          <span class="laptops-count"><%= laptops.length %> items</span>
+        </div>
+        <button class="btn btn-primary" id="add-btn">
+          <i class="fa fa-plus"></i> Add Laptop
+        </button>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Brand</th>
+              <th>Category</th>
+              <th>RAM</th>
+              <th>Storage</th>
+              <th>Price</th>
+              <th>Stock</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% laptops.map((value, index) => { %>
+            <tr>
+              <td><%= index + 1 %></td>
+              <td><span class="laptop-name-cell"><%= value.laptopName %></span></td>
+              <td><span class="laptop-brand"><%= value.laptopBrand %></span></td>
+              <td style="font-size:0.82rem; color:var(--text-muted);"><%= value.laptopCategory %></td>
+              <td style="font-family:var(--font-mono); font-size:0.82rem;"><%= value.laptopRam %>GB</td>
+              <td style="font-family:var(--font-mono); font-size:0.82rem;"><%= value.laptopStorage >= 1000 ? (value.laptopStorage/1000)+'TB' : value.laptopStorage+'GB' %></td>
+              <td><span class="price-cell">$<%= value.laptopPrice.toLocaleString() %></span></td>
+              <td><span class="stock-cell <%= value.laptopLeftCount <= 3 ? 'stock-low' : 'stock-ok' %>"><%= value.laptopLeftCount %></span></td>
+              <td>
+                <select class="spec-select new-product-status" id="<%= value._id %>">
+                  <option value="PAUSE"   <%= value.laptopStatus === "PAUSE"   ? 'selected' : '' %>>PAUSE</option>
+                  <option value="PROCESS" <%= value.laptopStatus === "PROCESS" ? 'selected' : '' %>>PROCESS</option>
+                  <option value="DELETE"  <%= value.laptopStatus === "DELETE"  ? 'selected' : '' %>>DELETE</option>
+                </select>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Add Laptop Form -->
+    <div class="panel" id="laptop-form" style="display:none;">
+      <div class="panel-header">
+        <span class="panel-title">New Laptop</span>
+        <button class="btn btn-ghost" onclick="closeForm()" type="button">
+          <i class="fa fa-times"></i> Cancel
+        </button>
+      </div>
+      <div class="panel-body">
+        <form action="/admin/item/create" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
+          <input name="laptopStatus" value="PAUSE" hidden />
+
+          <div style="display:flex; flex-direction:column; gap:1.25rem;">
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label>Laptop Name</label>
+                <input type="text" name="laptopName" placeholder="e.g. MacBook Pro 14" class="laptop-name" required />
+              </div>
+              <div class="form-group">
+                <label>Price ($)</label>
+                <input type="number" name="laptopPrice" placeholder="1299" class="laptop-price" required />
+              </div>
+            </div>
+
+            <div class="form-grid-3">
+              <div class="form-group">
+                <label>Brand</label>
+                <select name="laptopBrand" class="laptop-brand-select" required>
+                  <option value="APPLE">Apple</option>
+                  <option value="DELL">Dell</option>
+                  <option value="HP">HP</option>
+                  <option value="LENOVO">Lenovo</option>
+                  <option value="ASUS">Asus</option>
+                  <option value="ACER">Acer</option>
+                  <option value="MSI">MSI</option>
+                  <option value="SAMSUNG">Samsung</option>
+                  <option value="MICROSOFT">Microsoft</option>
+                  <option value="HUAWEI">Huawei</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Category</label>
+                <select name="laptopCategory" class="laptop-category" required>
+                  <option value="GAMING">Gaming</option>
+                  <option value="BUSINESS">Business</option>
+                  <option value="ULTRABOOK">Ultrabook</option>
+                  <option value="WORKSTATION">Workstation</option>
+                  <option value="BUDGET">Budget</option>
+                  <option value="CHROMEBOOK">Chromebook</option>
+                  <option value="OTHER">Other</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Condition</label>
+                <select name="laptopCondition" class="laptop-condition" required>
+                  <option value="NEW">New</option>
+                  <option value="REFURBISHED">Refurbished</option>
+                  <option value="USED">Used</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-grid-3">
+              <div class="form-group">
+                <label>RAM (GB)</label>
+                <select name="laptopRam" class="laptop-ram" required>
+                  <option value="4">4 GB</option>
+                  <option value="8" selected>8 GB</option>
+                  <option value="16">16 GB</option>
+                  <option value="32">32 GB</option>
+                  <option value="64">64 GB</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Storage (GB)</label>
+                <select name="laptopStorage" class="laptop-storage" required>
+                  <option value="128">128 GB</option>
+                  <option value="256" selected>256 GB</option>
+                  <option value="512">512 GB</option>
+                  <option value="1000">1 TB</option>
+                  <option value="2000">2 TB</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Stock Count</label>
+                <input type="number" name="laptopLeftCount" placeholder="10" class="laptop-left-count" required />
+              </div>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label>CPU</label>
+                <input type="text" name="laptopCpu" placeholder="e.g. Intel Core i7-13700H" class="laptop-cpu" required />
+              </div>
+              <div class="form-group">
+                <label>GPU</label>
+                <input type="text" name="laptopGpu" placeholder="e.g. NVIDIA RTX 4060" class="laptop-gpu" />
+              </div>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label>Display Size (inches)</label>
+                <input type="number" step="0.1" name="laptopDisplaySize" placeholder="15.6" class="laptop-display-size" required />
+              </div>
+              <div class="form-group">
+                <label>Description</label>
+                <textarea name="laptopDesc" class="laptop-desc" placeholder="Brief description..."></textarea>
+              </div>
+            </div>
+
+            <!-- Image Upload -->
+            <div class="form-group">
+              <label>Product Images</label>
+              <div class="upload-grid">
+                <% for(let i = 1; i <= 5; i++) { %>
+                <div class="upload-box">
+                  <img src="/img/upload.svg" id="image-section-<%= i %>" alt="Upload" />
+                  <i class="fa fa-plus upload-icon"></i>
+                  <input type="file" name="laptopImages" class="image-<%= i %>" onchange="previewFileHandler(this, <%= i %>)" <%= i === 1 ? 'required' : '' %> />
+                </div>
+                <% } %>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn btn-danger" id="cancel-btn">Cancel</button>
+              <button type="submit" class="btn btn-primary" id="create-btn">
+                <i class="fa fa-check"></i> Create Laptop
+              </button>
+            </div>
+
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</body>
+
+<script src="/js/main.js"></script>
+<script src="/js/products.js"></script>
+<%- include('includes/footer') %>

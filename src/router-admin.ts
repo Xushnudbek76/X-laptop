@@ -20,19 +20,19 @@ routerAdmin.get("/logout", shopController.logout);
 
 /** Product */
 routerAdmin.get(
-  "product/all",
+  "/item/all",
   shopController.verifyShop,
   productController.getAllItems,
 );
 routerAdmin.post(
-  "product/create",
+  "/item/create",
   shopController.verifyShop,
-  makeUploader("products").array("productImages", 5),
+  makeUploader("products").array("laptopImages", 5),
   productController.createNewItem,
 );
 routerAdmin.post(
-  "/product/:id",
-  shopController.verifyRestaurant,
+  "/item/update",
+  shopController.verifyShop,
   productController.updateChosenItem,
 );
 

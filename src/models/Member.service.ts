@@ -46,7 +46,7 @@ class MemberService {
       .exec();
 
     if (!member) throw new Errors(HttpCode.NOT_FOUND, Message.NO_MEMBER_NICK);
-    else if ((member.memberStatus = MemberStatus.BLOCK)) {
+    else if ((member.memberStatus === MemberStatus.BLOCK)) {
       throw new Errors(HttpCode.FORBIDDEN, Message.BLOCKED_USER);
     }
 
@@ -89,7 +89,7 @@ class MemberService {
     const member = await this.memberModel
       .findOne(
         { memberNick: input.memberNick },
-        { memberNick: 1, memberPassword: 1 },
+        { memberNick: 1, memberPassword: 1, memberType: 1  },
       )
       .exec();
     if (!member) throw new Errors(HttpCode.NOT_FOUND, Message.NO_MEMBER_NICK);
@@ -101,9 +101,10 @@ class MemberService {
     if (!isMatch) {
       throw new Errors(HttpCode.UNAUTHORIZED, Message.WRONG_PASSWORD);
     }
-    const result = member.toObject() as Member;
-    result.memberPassword = "";
-    return result;
+const result = member.toObject() as Member;
+result.memberPassword = "";
+result._id = result._id.toString() as any;
+return result;
   }
 
   public async getUsers(): Promise<Member[]> {
