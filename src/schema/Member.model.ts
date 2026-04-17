@@ -13,6 +13,7 @@ export interface IMember extends Document {
   memberStatus: MemberStatus;
   memberNick: string;
   memberPhone: string;
+  memberAddress: string;
   memberPassword: string;
   memberImage?: string;
   memberPoints: number;

@@ -9,6 +9,7 @@ export interface Member {
   memberStatus: MemberStatus;
   memberNick: string;
   memberPhone: string;
+  memberAddress: string;
   memberPassword: string;
   memberDesc?: string;
   memberImage?: string;
@@ -21,6 +22,7 @@ export interface MemberInput {
   memberType: MemberType;
   memberNick: string;
   memberPhone: string;
+  memberAddress: string;
   memberPassword: string;
   memberDesc?: string;
   memberImage?: string;
@@ -34,6 +36,12 @@ export interface LoginInput {
 export interface MemberUpdateInput {
   _id: ObjectId;
   memberStatus: MemberStatus;
+}
+
+export interface ExtendedRequest extends Request {
+  member: Member;
+  file: Express.Multer.File;
+  files: Express.Multer.File[];
 }
 
 export interface AdminRequest extends Request {
