@@ -18,6 +18,15 @@ class MemberService {
   }
 
   /** SPA */
+  public async getShop(): Promise<Member> {
+    const result = await this.memberModel
+      .findOne({ memberType: MemberType.SHOP })
+      .lean()
+      .exec();
+    result.target = "test";
+    if (!result) throw new Errors(HttpCode.NOT_FOUND, Message.NO_DATA_FOUND);
+    return result;
+  }
 
   public async signup(input: MemberInput): Promise<Member> {
     const salt = await bcrypt.genSalt();
@@ -67,13 +76,38 @@ class MemberService {
     const result = await this.memberModel
       .findOne({ _id: memberId, MemberStatus: MemberStatus.ACTIVE })
       .exec();
-      if (!result) {
-        throw new Errors(HttpCode.NOT_FOUND, Message.NO_DATA_FOUND);
+    if (!result) {
+      throw new Errors(HttpCode.NOT_FOUND, Message.NO_DATA_FOUND);
     }
-    
+
     return result;
   }
 
+  public async updateMember(
+    member: Member,
+    input: MemberUpdateInput,
+  ): Promise<Member> {
+    const memberId = shapeIntoMongooseObjectId(member._id);
+    const result = await this.memberModel
+      .findOneAndUpdate({ _id: memberId }, input, { new: true })
+      .exec();
+    if (!result) throw new Errors(HttpCode.NOT_MODIFIED, Message.UPDATE_FAILED);
+    return result;
+  }
+
+  public async getTopUsers(): Promise<Member[]> {
+    const result = await this.memberModel
+      .find({
+        memberStatus: MemberStatus.ACTIVE,
+        memberPoints: { $gte: 1 },
+      })
+      .sort({ memberPoints: -1 })
+      .limit(4)
+      .exec();
+
+    if (!result) throw new Errors(HttpCode.NOT_FOUND, Message.NO_DATA_FOUND);
+    return result;
+  }
   /** SSR */
   /** processSignup */
   public async processSignup(input: MemberInput): Promise<Member> {
