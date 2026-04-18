@@ -3,6 +3,7 @@ import Errors, { HttpCode } from "@/libs/Errors";
 import { T } from "@/libs/types/common";
 import { ExtendedRequest } from "@/libs/types/members";
 import { OrderUpdateInput } from "@/libs/types/order";
+import OrderService from "@/models/Order.service";
 import { Response } from "express";
 
 const orderController: T = {};
