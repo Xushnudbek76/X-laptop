@@ -1,15 +1,60 @@
 import { T } from "@/libs/types/common";
-import { LaptopInput, LaptopUpdateInput } from "../libs/types/item";
+import {
+  ItemInquiry,
+  LaptopInput,
+  LaptopUpdateInput,
+} from "../libs/types/item";
 import { Request, Response } from "express";
-import { AdminRequest } from "@/libs/types/members";
+import { AdminRequest, ExtendedRequest } from "@/libs/types/members";
 import Errors, { HttpCode, Message } from "@/libs/Errors";
 import ItemService from "../models/Item.service";
+import { LaptopBrand, LaptopCategory } from "@/libs/enums/item.enum";
 
 const itemService = new ItemService();
 const itemController: T = {};
 
 /** SPA */
+itemController.getItems = async (req: Request, res: Response) => {
+  try {
+    console.log("getItems");
+    const { page, limit, order, laptopBrand, laptopCategory, search } =
+      req.query;
 
+    const inquiry: ItemInquiry = {
+      order: String(order),
+      page: Number(page),
+      limit: Number(limit),
+      search: "",
+    };
+
+    if (laptopBrand) inquiry.laptopBrand = laptopBrand as LaptopBrand;
+    if (laptopCategory)
+      inquiry.laptopCategory = laptopCategory as LaptopCategory;
+    if (search) inquiry.search = String(search);
+
+    const result = await itemService.getItems(inquiry);
+    res.status(HttpCode.OK).json(result);
+  } catch (error) {
+    console.log("Error, getItems:", error);
+    if (error instanceof Errors) res.status(error.code).json(error);
+    else res.status(Errors.standard.code).json(Errors.standard);
+  }
+};
+
+itemController.getItem = async (req: ExtendedRequest, res: Response) => {
+  try {
+    console.log("getItem");
+    const { id } = req.params;
+    const memberId = req.member?._id ?? null,
+      result = await itemService.getItem(memberId, id);
+
+    res.status(HttpCode.OK).json(result);
+  } catch (error) {
+    console.log("Error, getItem:", error);
+    if (error instanceof Errors) res.status(error.code).json(error);
+    else res.status(Errors.standard.code).json(Errors.standard);
+  }
+};
 /** SSR  */
 
 itemController.getAllItems = async (req: AdminRequest, res: Response) => {

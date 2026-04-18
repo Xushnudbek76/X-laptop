@@ -25,6 +25,14 @@ export interface Laptop {
   laptopViews: number;
 }
 
+export interface ItemInquiry {
+    order: string;
+    page: number;
+    limit: number;
+    laptopCategory?: LaptopCategory;
+    laptopBrand?: LaptopBrand
+    search: string;
+}
 export interface LaptopInput {
   laptopStatus?: LaptopStatus;
   laptopBrand: LaptopBrand;
