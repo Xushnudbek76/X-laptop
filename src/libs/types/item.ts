@@ -23,15 +23,17 @@ export interface Laptop {
   laptopDesc?: string | null;
   laptopImages: string[];
   laptopViews: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface ItemInquiry {
-    order: string;
-    page: number;
-    limit: number;
-    laptopCategory?: LaptopCategory;
-    laptopBrand?: LaptopBrand
-    search: string;
+  order: string;
+  page: number;
+  limit: number;
+  laptopCategory?: LaptopCategory;
+  laptopBrand?: LaptopBrand;
+  search: string;
 }
 export interface LaptopInput {
   laptopStatus?: LaptopStatus;
