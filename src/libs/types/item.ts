@@ -32,6 +32,8 @@ export interface ItemInquiry {
   page: number;
   limit: number;
   laptopCategory?: LaptopCategory;
+  laptopRam?: LaptopRam;
+  laptopStorage?: LaptopStorage;
   laptopBrand?: LaptopBrand;
   search: string;
 }

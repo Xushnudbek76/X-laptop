@@ -42,6 +42,8 @@ class OrderService {
       })) as unknown as Order;
       const orderId = newOrder._id;
       await this.recordOrderItem(orderId, input);
+        
+
       return newOrder;
     } catch (error) {
       console.log("Error, model: createOrder", error);
@@ -56,6 +58,8 @@ class OrderService {
     const promisedList = input.map(async (item: OrderItemInput) => {
       item.orderId = orderId;
       item.itemId = shapeIntoMongooseObjectId(item.itemId);
+          console.log("saving itemId:", item.itemId, typeof item.itemId); // ADD THIS
+
       const data = await this.orderItemModel.create(item as any);
       return data;
     });
@@ -69,8 +73,8 @@ class OrderService {
   ): Promise<Order[]> {
     const memberId = shapeIntoMongooseObjectId(member._id);
     const matches = { memberId: memberId, orderStatus: inquiry.orderStatus };
-
-    const result = await this.orderModel
+console.log("matches:", matches);
+   const result = await this.orderModel
       .aggregate([
         { $match: matches },
         { $sort: { updatedAt: -1 } },
@@ -86,7 +90,7 @@ class OrderService {
         },
         {
           $lookup: {
-            from: "items",
+            from: "laptops",
             localField: "orderItems.itemId",
             foreignField: "_id",
             as: "itemData",
@@ -96,7 +100,7 @@ class OrderService {
       .exec();
 
     if (!result) throw new Errors(HttpCode.NOT_FOUND, Message.NO_DATA_FOUND);
-    return result;
+   return result;
   }
 
   public async updateOrder(

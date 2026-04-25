@@ -17,8 +17,16 @@ const itemController: T = {};
 itemController.getItems = async (req: Request, res: Response) => {
   try {
     console.log("getItems");
-    const { page, limit, order, laptopBrand, laptopCategory, search } =
-      req.query;
+    const {
+      page,
+      limit,
+      order,
+      laptopBrand,
+      laptopCategory,
+      laptopRam,
+      laptopStorage,
+      search,
+    } = req.query;
 
     const inquiry: ItemInquiry = {
       order: String(order),
@@ -30,6 +38,12 @@ itemController.getItems = async (req: Request, res: Response) => {
     if (laptopBrand) inquiry.laptopBrand = laptopBrand as LaptopBrand;
     if (laptopCategory)
       inquiry.laptopCategory = laptopCategory as LaptopCategory;
+
+    // Add these two
+    if (laptopRam !== undefined) inquiry.laptopRam = Number(laptopRam);
+    if (laptopStorage !== undefined)
+      inquiry.laptopStorage = Number(laptopStorage);
+
     if (search) inquiry.search = String(search);
 
     const result = await itemService.getItems(inquiry);

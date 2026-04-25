@@ -27,12 +27,21 @@ class ItemService {
 
     if (inquiry.laptopBrand) match.laptopBrand = inquiry.laptopBrand;
     if (inquiry.laptopCategory) match.laptopCategory = inquiry.laptopCategory;
+
+    // Add these two filters
+    if (inquiry.laptopRam !== undefined) {
+      match.laptopRam = Number(inquiry.laptopRam);
+    }
+    if (inquiry.laptopStorage !== undefined) {
+      match.laptopStorage = Number(inquiry.laptopStorage);
+    }
+
     if (inquiry.search) {
       match.laptopName = { $regex: new RegExp(inquiry.search, "i") };
     }
 
     const sort: T =
-      inquiry.order === "laptopPage"
+      inquiry.order === "laptopPrice"
         ? { [inquiry.order]: 1 }
         : { [inquiry.order]: -1 };
 

@@ -13,11 +13,11 @@ export interface IMember extends Document {
   memberStatus: MemberStatus;
   memberNick: string;
   memberPhone: string;
-  memberAddress: string;
+  memberAddress?: string;
   memberPassword: string;
   memberImage?: string;
   memberPoints: number;
-  memberDescription?: string;
+  memberDesc?: string;
   address: IAddress[];
   createdAt: Date;
   updatedAt: Date;
@@ -51,7 +51,8 @@ const memberSchema = new Schema<IMember>(
     memberPassword: { type: String, required: true },
     memberImage: { type: String },
     memberPoints: { type: Number, required: true, default: 0 },
-    memberDescription: { type: String },
+    memberAddress: { type: String, default: "" },
+    memberDesc: { type: String, default: "" },
     address: { type: [addressSchema], default: [] },
   },
   { timestamps: true }

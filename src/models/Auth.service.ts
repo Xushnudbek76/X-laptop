@@ -4,9 +4,10 @@ import { Member } from "@/libs/types/members";
 import jwt from "jsonwebtoken";
 
 class AuthService {
-  private readonly secretToken;
-  constructor() {
-    this.secretToken = process.env.SECRET_TOKEN as string;
+  private getSecretToken(): string {
+    const secret = process.env.SECRET_TOKEN || process.env.JWT_SECRET;
+   
+    return secret;
   }
 
   public async createToken(payload: Member) {
@@ -14,7 +15,7 @@ class AuthService {
       const duration = `${AUTH_TIMER}h`;
       jwt.sign(
         payload,
-        process.env.SECRET_TOKEN as string,
+        this.getSecretToken(),
         { expiresIn: duration },
         (err, token) => {
           if (err)
@@ -30,7 +31,7 @@ class AuthService {
   public async checkAuth(token: string): Promise<Member> {
     const result: Member = jwt.verify(
         token,
-        this.secretToken
+        this.getSecretToken()
     ) as Member;
     return result;
   }

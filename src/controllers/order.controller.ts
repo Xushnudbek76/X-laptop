@@ -13,7 +13,7 @@ orderController.createOrder = async (req: ExtendedRequest, res: Response) => {
   try {
     console.log("createOrder");
     const result = await orderService.createOrder(req.member, req.body);
-
+console.log("createOrder input:", JSON.stringify(req.body, null, 2)); // ADD THIS
     res.status(HttpCode.OK).json(result);
   } catch (error) {
     console.log("Error, createOrder:", error);
