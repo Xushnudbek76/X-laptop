@@ -34,6 +34,7 @@ export interface LoginInput {
 }
 
 export interface MemberUpdateInput {
+  _id: ObjectId;
   memberNick?: string;
   memberPassword?: string;
   memberPhone?: string;

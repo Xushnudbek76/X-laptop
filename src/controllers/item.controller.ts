@@ -60,6 +60,7 @@ itemController.getItem = async (req: ExtendedRequest, res: Response) => {
     console.log("getItem");
     const { id } = req.params;
     const memberId = req.member?._id ?? null,
+    // @ts-ignore
       result = await itemService.getItem(memberId, id);
 
     res.status(HttpCode.OK).json(result);
