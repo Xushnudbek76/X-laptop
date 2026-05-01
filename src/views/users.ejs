@@ -1,55 +1,6 @@
 <%- include('includes/header') %>
+<link rel="stylesheet" type="text/css" href="/css/users.css" />
 
-<style>
-  .page-body { min-height: 100vh; background: var(--bg); }
-
-  .table-wrap { overflow-x: auto; }
-
-  .member-nick-cell {
-    display: flex;
-    align-items: center;
-    gap: 0.65rem;
-  }
-
-  .member-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: var(--bg-3);
-    border: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.7rem;
-    font-weight: 700;
-    color: var(--accent);
-    flex-shrink: 0;
-    text-transform: uppercase;
-  }
-
-  .empty-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 5rem 2rem;
-    text-align: center;
-  }
-
-  .empty-state i { font-size: 2.5rem; color: var(--border-light); margin-bottom: 1rem; }
-  .empty-state h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
-  .empty-state p { font-size: 0.85rem; color: var(--text-muted); font-family: var(--font-mono); }
-
-  .users-count {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    background: var(--bg-3);
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    padding: 0.2rem 0.65rem;
-  }
-</style>
 
 <body class="page-body">
   <nav class="navbar">
