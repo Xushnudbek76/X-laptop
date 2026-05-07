@@ -76,7 +76,7 @@ itemController.getAllItems = async (req: AdminRequest, res: Response) => {
   try {
     console.log("getAllProducts");
     const data = await itemService.getAllProducts();
-    res.render("products", { laptops: data });
+    res.render("items", { laptops: data });
   } catch (error) {
     console.log("Error, getAllProducts:", error);
     if (error instanceof Errors) res.status(error.code).json(error);

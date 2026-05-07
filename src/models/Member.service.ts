@@ -67,9 +67,11 @@ class MemberService {
     }
     return (await this.memberModel
       .findById(member._id)
+      .select('-memberPassword')
       .lean()
       .exec()) as Member;
   }
+
   public async getMemberDetail(member: Member): Promise<Member> {
     const memberId = shapeIntoMongooseObjectId(member._id);
     const result = await this.memberModel
