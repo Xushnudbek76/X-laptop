@@ -1,16 +1,16 @@
-import express from "express";
+import express = require("express");
 import path from "path";
 import routerAdmin from "./router-admin";
 import router from "./router";
-import morgan from "morgan";
+import morgan = require("morgan");
 import { MORGAN_FORMAT } from "./libs/config";
-import session from "express-session";
-import ConnectMongoDB from "connect-mongodb-session";
+import session = require("express-session");
+import ConnectMongoDB = require("connect-mongodb-session");
 import { T } from "./libs/types/common";
-import cors from "cors";
+import cors = require("cors");
 
 import dotenv from "dotenv";
-import cookieParser from "cookie-parser";
+import cookieParser = require("cookie-parser");
 dotenv.config();
 
 const MongoDBStore = ConnectMongoDB(session);

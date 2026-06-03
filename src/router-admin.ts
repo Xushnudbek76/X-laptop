@@ -1,4 +1,4 @@
-import express, { Router } from "express";
+import express = require("express");
 const routerAdmin = express.Router();
 import shopController from "./controllers/shop.controller";
 import makeUploader from "./libs/utils/uploader";

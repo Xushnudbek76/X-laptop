@@ -1,4 +1,4 @@
-import express from "express";
+import express = require("express");
 const router = express.Router();
 import memberController from "./controllers/member.controller";
 import uploader from "./libs/utils/uploader";
