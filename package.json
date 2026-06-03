@@ -4,7 +4,7 @@
   "description": "x-laptop with MERN stack by Xushnudbek(HAMILTON)",
   "main": "src/server.ts",
   "scripts": {
-    "start": "ts-node src/server.ts",
+    "start": "ts-node -r tsconfig-paths/register src/server.ts",
     "start:dev": "nodemon --exec tsx src/server.ts",
     "test": "jest",
     "test:watch": "jest --watch",

@@ -154,6 +154,10 @@ X-laptop/
 
 ## Getting Started
 
+Production deployment guide:
+
+- See [docs/VPS_DEPLOYMENT.md](./docs/VPS_DEPLOYMENT.md) for separate frontend/backend VPS deployment.
+
 ### Prerequisites
 
 - Node.js 18+
