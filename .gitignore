@@ -1,4 +1,10 @@
 .env
 node_modules
-uploads
+dist
+uploads/*
+!uploads/.gitkeep
+!uploads/members/
+!uploads/members/.gitkeep
+!uploads/products/
+!uploads/products/.gitkeep
 .env
