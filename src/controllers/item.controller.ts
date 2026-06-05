@@ -9,6 +9,7 @@ import { AdminRequest, ExtendedRequest } from "@/libs/types/members";
 import Errors, { HttpCode, Message } from "@/libs/Errors";
 import ItemService from "../models/Item.service";
 import { LaptopBrand, LaptopCategory } from "@/libs/enums/item.enum";
+import { alertAndRedirect } from "@/libs/utils/ssr";
 
 const itemService = new ItemService();
 const itemController: T = {};
@@ -95,16 +96,12 @@ itemController.createNewItem = async (req: AdminRequest, res: Response) => {
       return ele.path.replace(/\\/g, "/");
     });
     await itemService.createNewItem(data);
-    res.send(
-      `<script> alert("Successfully Added"); window.location.replace('/admin/item/all');</script>`,
-    );
+    alertAndRedirect(res, "Successfully added", "/admin/item/all");
   } catch (error) {
     console.log("Error, createNewProduct:", error);
     const message =
       error instanceof Errors ? error.message : Message.SOMETHING_WENT_WRONG;
-    res.send(
-      `<script> alert('${message}') window.location.replace('/admin/item/all');</script>`,
-    );
+    alertAndRedirect(res, message, "/admin/item/all");
   }
 };
 

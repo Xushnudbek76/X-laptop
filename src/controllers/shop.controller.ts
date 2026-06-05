@@ -4,6 +4,7 @@ import MemberService from "../models/Member.service";
 import { AdminRequest, LoginInput, MemberInput } from "@/libs/types/members";
 import { MemberType } from "@/libs/enums/member.enum";
 import Errors, { HttpCode, Message } from "@/libs/Errors";
+import { alertAndRedirect, alertOnly } from "@/libs/utils/ssr";
 const shopController: T = {};
 const memberService = new MemberService();
 shopController.goHome = (req: Request, res: Response) => {
@@ -55,18 +56,16 @@ shopController.processSignup = async (req: AdminRequest, res: Response) => {
       res.redirect("/admin/item/all");
     });
   } catch (error) {
-    console.log("Error, getSignup:", error);
+    console.log("Error, processSignup:", error);
     const message =
       error instanceof Errors ? error.message : Message.SOMETHING_WENT_WRONG;
-    res.send(`
-      <script>alert('Hi, ${message}'); window.location.replace('/admin/signup')</script>
-      `);
+    alertAndRedirect(res, message, "/admin/signup");
   }
 };
 
 shopController.processLogin = async (req: AdminRequest, res: Response) => {
   try {
-    console.log("getSignup");
+    console.log("processLogin");
     const input: LoginInput = req.body,
       result = await memberService.processLogin(input);
 
@@ -79,9 +78,7 @@ shopController.processLogin = async (req: AdminRequest, res: Response) => {
     console.log("Error, processLogin:", error);
     const message =
       error instanceof Errors ? error.message : Message.SOMETHING_WENT_WRONG;
-    res.send(`
-        <script>alert('Hi, ${message}') window.location.replace('admin/login')</script>
-        `);
+    alertAndRedirect(res, message, "/admin/login");
   }
 };
 
@@ -93,7 +90,6 @@ shopController.logout = async (req: AdminRequest, res: Response) => {
     });
   } catch (error) {
     console.log("Error, logout:", error);
-    res.send(error);
     res.redirect("/admin");
   }
 };
@@ -106,7 +102,7 @@ shopController.getUsers = async (req: Request, res: Response) => {
     res.render("users", { users: result });
   } catch (error) {
     console.log("Error, getUsers:", error);
-    res.redirect("admin/login");
+    res.redirect("/admin/login");
   }
 };
 
@@ -127,13 +123,11 @@ shopController.checkAuthSession = async (req: AdminRequest, res: Response) => {
     console.log("checkAuthSession");
 
     if (req.session?.member)
-      res.send(
-        `  <script>alert("Hi, ${req.session.member.memberNick}")</script>`,
-      );
-    else res.send(`<script>alert("${Message.NOT_AUTHENTICATED}")</script>`);
+      alertOnly(res, `Hi, ${req.session.member.memberNick}`);
+    else alertOnly(res, Message.NOT_AUTHENTICATED);
   } catch (error) {
     console.log("Error, checkAuthSession:", error);
-    res.send(error);
+    alertOnly(res, Message.SOMETHING_WENT_WRONG);
   }
 };
 
@@ -147,9 +141,7 @@ shopController.verifyShop = async (
     next();
   } else {
     const message = Message.NOT_AUTHENTICATED;
-    res.send(
-      `<script>alert("${message}"); window.location.replace('/admin/login');</script>`,
-    );
+    alertAndRedirect(res, message, "/admin/login");
   }
 };
 export default shopController;
