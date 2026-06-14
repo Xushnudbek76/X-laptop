@@ -1,0 +1,14 @@
+node_modules
+dist
+.git
+.DS_Store
+*.log
+.env
+uploads/*
+!uploads/.gitkeep
+!uploads/members/
+uploads/members/*
+!uploads/members/.gitkeep
+!uploads/products/
+uploads/products/*
+!uploads/products/.gitkeep
